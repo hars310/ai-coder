@@ -1,6 +1,7 @@
 import express from 'express';
 import morgan from 'morgan';
 import dbconnection from './dbConnection/db.js';
+import userRoutes from './routes/user.routes.js';
 
 dbconnection();
 
@@ -17,6 +18,9 @@ app.use(express.urlencoded({ extended: true }));
 app.get('/', (req, res) => {
     res.send('Hello World');
 });
+
+//routes
+app.use('/api/user', userRoutes)
 
 
 export default app;
