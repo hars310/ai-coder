@@ -2,6 +2,7 @@ import express from 'express';
 import morgan from 'morgan';
 import dbconnection from './dbConnection/db.js';
 import userRoutes from './routes/user.routes.js';
+import cookieParser from 'cookie-parser';
 
 dbconnection();
 
@@ -13,6 +14,7 @@ app.use(morgan('dev'));
 // to use json and urlencoded 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 // to use routes
 app.get('/', (req, res) => {
