@@ -1,5 +1,5 @@
 import userModel from '../models/user.model.js';
-import {hashPassword} from '../utils/user/hashPassword.js';
+import {hashPassword} from '../utils/user/hashAndComparePassword.js';
 
 export  async function createUser({username, email , password}) {  
     if(!email || !password){

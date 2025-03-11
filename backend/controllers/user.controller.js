@@ -2,6 +2,7 @@ import userModel from '../models/user.model.js';
 import * as userService from '../services/user.service.js';
 import {validationResult} from 'express-validator';
 import { createJwtToken } from '../utils/user/createJWT_Token.js';
+import { comparePassword } from '../utils/user/hashAndComparePassword.js';
 
  export async function createUserController(req,res){
 
@@ -20,6 +21,41 @@ import { createJwtToken } from '../utils/user/createJWT_Token.js';
         const token = await createJwtToken(user.email);
 
         res.status(201).json({user,token});
+    }catch(err){
+        res.status(400).json({message:err.message});
+    }
+
+}
+
+export async function loginUserController(req,res){
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    try{
+        const {email,password} = req.body;
+
+        // in our user model we have selected password to be false 
+        // so we need to select it here to be able to compare the password
+        const user = await userModel.findOne({email}).select("+password");
+
+        if(!user){
+            return res.status(401).json({message:"User not found"});
+        }
+
+        // this compares the password in the request body 
+        // with the password in the database
+        const comparePass = await comparePassword(password,user.password)
+
+        if(!comparePass){
+            return res.status(401).json({message:"Invalid password"});
+        }
+        
+        // this creates a jwt token for the user
+        const token = await createJwtToken(user.email);
+
+        res.status(200).json({user,token});
     }catch(err){
         res.status(400).json({message:err.message});
     }

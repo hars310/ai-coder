@@ -12,4 +12,10 @@ router.post('/register',
     body('password').isLength({ min: 6 }),
     userController.createUserController); 
 
+// this route is used to login a user
+router.post('/login',
+    body('email').isEmail(),
+    body('password').isLength({ min: 6 }),
+    userController.loginUserController);
+
 export default router
