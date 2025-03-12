@@ -3,6 +3,7 @@ import * as userService from "../services/user.service.js";
 import { validationResult } from "express-validator";
 import { createJwtToken } from "../utils/user/createJWT_Token.js";
 import { comparePassword } from "../utils/user/hashAndComparePassword.js";
+import redisClient from "../services/redis.service.js";
 
 function checkValidationErrors(req) {
   const errors = validationResult(req);
@@ -86,4 +87,19 @@ export async function profileController(req, res) {
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
+}
+
+export async function logoutController(req, res) { 
+    try {
+        const token = req.cookies.token || req.header('Authorization').split(' ')[1];
+
+        redisClient.set(token,'logout', 'EX', 60 * 60 * 24);
+
+        // res.clearCookie('token');
+
+        res.status(200).json({message:"Logged out successfully"})
+
+    } catch (error) {
+        
+    }
 }
