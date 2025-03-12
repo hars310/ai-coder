@@ -1,10 +1,11 @@
 import { useState } from 'react'
+import AppRoutes from './routes/AppRoutes'
 
 function App() {
 
   return (
     <>
-    <p className='text-red-500 text-5xl'>HARSH</p>
+    <AppRoutes />
     </>
   )
 }
