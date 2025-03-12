@@ -17,8 +17,10 @@ router.post(
 // this route is used to login a user
 router.post(
   "/login",
-  body("email").isEmail(),
-  body("password").isLength({ min: 6 }),
+  body("email").isEmail().withMessage("Please enter a valid email."),
+  body("password")
+    .isLength({ min: 6 })
+    .withMessage("Password must be at least 6 characters long."),
   userController.loginUserController
 );
 

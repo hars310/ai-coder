@@ -5,19 +5,20 @@ import { createJwtToken } from "../utils/user/createJWT_Token.js";
 import { comparePassword } from "../utils/user/hashAndComparePassword.js";
 import redisClient from "../services/redis.service.js";
 
-function checkValidationErrors(req) {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-  return;
-}
+// function checkValidationErrors(req) {
+  
+// }
 
 export async function createUserController(req, res) {
   // this checks for any validation errors in the request body
   // if there are any errors it will return a 400 status code with the errors
   // if there are no errors it will continue to the next line
-  checkValidationErrors(req);
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    // console.log(errors.array())
+    return res.status(400).json({ errors: errors.array() });
+  }
+  // checkValidationErrors(req);
 
   try {
     const user = await userService.createUser(req.body);
@@ -40,7 +41,12 @@ export async function createUserController(req, res) {
 }
 
 export async function loginUserController(req, res) {
-  checkValidationErrors(req);
+  // checkValidationErrors(req,res);
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    // console.log(errors.array())
+    return res.status(400).json({ errors: errors.array() });
+  }
 
   try {
     const { email, password } = req.body;
@@ -79,7 +85,12 @@ export async function loginUserController(req, res) {
 }
 
 export async function profileController(req, res) {
-  checkValidationErrors(req);
+  // checkValidationErrors(req);
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    // console.log(errors.array())
+    return res.status(400).json({ errors: errors.array() });
+  }
   try {
     const user = req.user;
     // console.log(user)
