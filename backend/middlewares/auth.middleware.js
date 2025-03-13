@@ -3,7 +3,7 @@ import redisClient from '../services/redis.service.js';
 
 export async function authUser(req, res, next){
     try {
-        const token = req.cookies.token || req.header('Authorization').split(' ')[1];
+        const token =  req.body.token ||  req.cookies.token || req.header('Authorization').split(' ')[1];
         // console.log(token)
         if(!token) return res.status(401).json({message:"Please authenticate first 1 "}); 
 
