@@ -21,6 +21,18 @@ export const createProject = async (req,res) => {
         res.status(400).json({message: error.message})
     }
 
+}
 
-
+export const getAllProjects = async (req,res) =>{
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+    try {
+        const projects = await projectService.getAllProjects();
+        // console.log(projects)
+        res.status(200).json(projects);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
 }

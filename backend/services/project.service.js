@@ -13,3 +13,11 @@ export const createProject = async ({ name, userId }) => {
     
 
 };
+export const getAllProjects = async () => {
+  try {
+    const projects = await Project.find();
+    return projects;
+  } catch (error) {
+    throw new Error("Error fetching projects: " + error.message);
+  }
+};

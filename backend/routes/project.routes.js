@@ -13,4 +13,6 @@ router.post(
   projectController.createProject
 );
 
+router.get("/all", projectController.getAllProjects);
+
 export default router;

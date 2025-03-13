@@ -2,28 +2,27 @@ import jwt from 'jsonwebtoken';
 import redisClient from '../services/redis.service.js';
 
 export async function authUser(req, res, next){
-    try {
-        const token =  req.body.token ||  req.cookies.token || req.header('Authorization').split(' ')[1];
-        // console.log(token)
-        if(!token) return res.status(401).json({message:"Please authenticate first 1 "}); 
+  try {
+    let token = req.header("Authorization");
 
-        const isBlacklisted = await redisClient.get(token);
-        // console.log(isBlacklisted)
-        if(isBlacklisted) {
-            res.cookies('token', '');
-            return res.status(401).json({message:"Please authenticate first"});
-        }
-
-        // this will decode the token and get the user
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        // console.log(decoded)
-
-        // this will add the user to the request object
-        req.user = decoded;
-
-        // this will allow the user to access the next route
-        next()
-    } catch (error) {
-        res.status(401).json({message:"Please authenticate first 2"});
+    if (!token || !token.startsWith("Bearer ")) {
+      return res.status(401).json({ message: "Unauthorized! No token provided." });
     }
+
+    token = token.split(" ")[1]; // Extract the token from "Bearer <TOKEN>"
+
+    const isBlacklisted = await redisClient.get(token);
+    if (isBlacklisted) {
+        res.cookies('token', '');
+      return res.status(401).json({ message: "Token is invalid. Please login again." });
+    }
+
+    // Verify token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
+
+    next();
+  } catch (error) {
+    return res.status(401).json({ message: "Invalid or expired token. Please login again." });
+  }
 }
